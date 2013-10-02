@@ -1,6 +1,6 @@
 {
     "name": "inject-me",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Simple IoC framework for Javascript",
     "author": {
         "name": "Yi Gyuwon",
@@ -19,5 +19,8 @@
     "license": {
         "type": "MIT",
         "url": "http://opensource.org/licenses/MIT"
+    },
+    "dependencies": {
+        "function-signature": ">=0.2.0"
     }
 }
