@@ -1,0 +1,19 @@
+{
+    "name": "inject-me",
+    "version": "0.1.0",
+    "description": "Simple IoC framework for Javascript",
+    "author": {
+        "name": "Yi Gyuwon",
+        "email": "gyuwon@live.com"
+    },
+    "main": "inject-me.js",
+    "keywords": [
+        "ioc",
+        "dependency",
+        "injection"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@bitbucket.org:Gyuwon/inject-me.git"
+    }
+}
