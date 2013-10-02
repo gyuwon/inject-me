@@ -72,6 +72,14 @@ var IoC = new (function () {
         }
     };
 
+    /**
+     * Create a new instance of specified function with dependencies.
+     *
+     * Parameters
+     * - fn: The function to create a new instance.
+     *
+     * Returns: A new instance of 'fn'.
+     */
     self.inject = function (fn) {
         if (typeof fn !== 'function') {
             throw new Error("The parameter 'fn' is not a function.");
