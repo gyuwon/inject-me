@@ -15,5 +15,9 @@
     "repository": {
         "type": "git",
         "url": "git@bitbucket.org:Gyuwon/inject-me.git"
+    },
+    "license": {
+        "type": "MIT",
+        "url": "http://opensource.org/licenses/MIT"
     }
 }
