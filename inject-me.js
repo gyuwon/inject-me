@@ -24,12 +24,17 @@
  *
  */
 
+/*jslint vars: true, continue: true, forin: true*/
+
+'use strict';
+
 var signature = require('function-signature');
 
-var IoC = new (function () {
+var IoC = function () {
 
-    var self = this;
-    var registry = {};
+    var self = this,
+        registry = {},
+        cache = {};
 
     /**
      * Register a dependency object or a dependency resolver.
@@ -40,6 +45,15 @@ var IoC = new (function () {
      */
     self.bind = function (name, dependency) {
         registry[name] = dependency;
+    };
+
+    var sig = function (fn) {
+        var s = cache[fn];
+        if (!s) {
+            s = signature(fn);
+            cache[fn] = s;
+        }
+        return s;
     };
 
     /**
@@ -53,11 +67,9 @@ var IoC = new (function () {
     self.get = function (name) {
         var dependency = registry[name];
         if (typeof dependency === 'function') {
-            var fn = dependency;
-            var sig = signature(fn);
-            var params = {};
-            for (var i in sig.params) {
-                var p = sig.params[i];
+            var fn = dependency, s = sig(fn), params = {}, i;
+            for (i in s.params) {
+                var p = s.params[i];
                 if (p.name === name) {
                     continue;
                 }
@@ -66,10 +78,9 @@ var IoC = new (function () {
                     params[p.name] = d;
                 }
             }
-            return signature.invoke(null, fn, sig, params);
-        } else {
-            return dependency;
+            dependency = signature.invoke(null, fn, s, params);
         }
+        return dependency;
     };
 
     /**
@@ -84,18 +95,17 @@ var IoC = new (function () {
         if (typeof fn !== 'function') {
             throw new Error("The parameter 'fn' is not a function.");
         }
-        var sig = signature(fn);
-        var params = {};
-        for (var i in sig.params) {
-            var p = sig.params[i];
-            var d = self.get(p.name);
+        var s = sig(fn), params = {}, i;
+        for (i in s.params) {
+            var p = s.params[i],
+                d = self.get(p.name);
             if (d) {
                 params[p.name] = d;
             }
         }
-        return signature.create(fn, sig, params);
+        return signature.create(fn, s, params);
     };
 
-})();
+};
 
-module.exports = IoC;
+module.exports = new IoC();

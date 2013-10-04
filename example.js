@@ -20,7 +20,7 @@ IoC.bind('Service', function (Repository) {
     };
 });
 
-// Define the controller type that depends on 'Service'.
+// Define the controller function that depends on 'Service'.
 var Controller = function (Service) {
     var self = this;
     self.service = Service;
