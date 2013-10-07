@@ -1,4 +1,4 @@
-# function-signature
+# inject-me
 
 Simple IoC framework for Javascript.
 
