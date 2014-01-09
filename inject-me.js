@@ -24,9 +24,7 @@
  *
  */
 
-/*jslint vars: true, continue: true, forin: true*/
-
-'use strict';
+/*jslint node: true, vars: true, continue: true, forin: true*/
 
 var signature = require('function-signature');
 
