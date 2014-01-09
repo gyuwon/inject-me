@@ -1,6 +1,6 @@
 {
     "name": "inject-me",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Simple IoC framework for Javascript",
     "author": {
         "name": "Yi Gyuwon",
