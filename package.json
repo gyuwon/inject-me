@@ -21,6 +21,6 @@
         "url": "http://opensource.org/licenses/MIT"
     },
     "dependencies": {
-        "function-signature": ">=0.2.0"
+        "function-signature": ">=0.1.2"
     }
 }
