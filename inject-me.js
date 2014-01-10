@@ -24,85 +24,90 @@
  *
  */
 
-/*jslint node: true, vars: true, continue: true, forin: true*/
+/* jshint node: true, laxcomma: true */
 
 var signature = require('function-signature');
 
 var IoC = function () {
 
-    var self = this,
-        registry = {},
-        cache = {};
+  var self = this
+    , registry = {}
+    , cache = {};
 
-    /**
-     * Register a dependency object or a dependency resolver.
-     *
-     * Parameters
-     * - name: The name of dependency.
-     * - dependency: A dependency object or a dependency resolver that is associated with 'name'.
-     */
-    self.bind = function (name, dependency) {
-        registry[name] = dependency;
-    };
+  /**
+   * Register a dependency object or a dependency resolver.
+   *
+   * Parameters
+   * - name: The name of dependency.
+   * - dependency: A dependency object or a dependency resolver that is associated with 'name'.
+   */
+  self.bind = function (name, dependency) {
+    registry[name] = dependency;
+  };
 
-    var sig = function (fn) {
-        var s = cache[fn];
-        if (!s) {
-            s = signature(fn);
-            cache[fn] = s;
-        }
-        return s;
-    };
+  var sig = function (fn) {
+    var s = cache[fn];
+    if (!s) {
+      s = signature(fn);
+      cache[fn] = s;
+    }
+    return s;
+  };
 
-    /**
-     * Returns the dependency object that is associated with 'nane'.
-     *
-     * Parameters
-     * - name: The name of dependency.
-     *
-     * Returns: The dependency object that is associated with 'name'.
-     */
-    self.get = function (name) {
-        var dependency = registry[name];
-        if (typeof dependency === 'function') {
-            var fn = dependency, s = sig(fn), params = {}, i;
-            for (i in s.params) {
-                var p = s.params[i];
-                if (p.name === name) {
-                    continue;
-                }
-                var d = self.get(p.name);
-                if (d) {
-                    params[p.name] = d;
-                }
-            }
-            dependency = signature.invoke(null, fn, s, params);
+  /**
+   * Returns the dependency object that is associated with 'nane'.
+   *
+   * Parameters
+   * - name: The name of dependency.
+   *
+   * Returns: The dependency object that is associated with 'name'.
+   */
+  self.get = function (name) {
+    var dependency = registry[name];
+    if (typeof dependency === 'function') {
+      var fn = dependency, s = sig(fn), params = {}, i;
+      for (i in s.params) {
+        var p = s.params[i];
+        if (p.name === name) {
+          continue;
         }
-        return dependency;
-    };
+        var d = self.get(p.name);
+        if (d) {
+          params[p.name] = d;
+        }
+      }
+      if (fn.name.match(/^[A-Z]/)) {
+        dependency = signature.create(fn, s, params);
+      }
+      else {
+        dependency = signature.invoke(null, fn, s, params);
+      }
+    }
+    return dependency;
+  };
 
-    /**
-     * Create a new instance of specified function with dependencies.
-     *
-     * Parameters
-     * - fn: The function to create a new instance.
-     *
-     * Returns: A new instance of 'fn'.
-     */
-    self.inject = function (fn) {
-        if (typeof fn !== 'function') {
-            throw new Error("The parameter 'fn' is not a function.");
-        }
-        var s = sig(fn), params = {}, i;
-        for (i in s.params) {
-            var p = s.params[i],
-                d = self.get(p.name);
-            if (d) {
-                params[p.name] = d;
-            }
-        }
-        return signature.create(fn, s, params);
-    };
+  /**
+   * Create a new instance of specified function with dependencies.
+   *
+   * Parameters
+   * - fn: The function to create a new instance.
+   *
+   * Returns: A new instance of 'fn'.
+   */
+  self.inject = function (fn) {
+    if (typeof fn !== 'function') {
+      throw new Error("The parameter 'fn' is not a function.");
+    }
+    var s = sig(fn), params = {}, i;
+    for (i in s.params) {
+      var p = s.params[i]
+        , d = self.get(p.name);
+      if (d) {
+        params[p.name] = d;
+      }
+    }
+    return signature.create(fn, s, params);
+  };
 
 };
 
