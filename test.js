@@ -1,3 +1,6 @@
+/* jshint node: true */
+/* global describe, it */
+
 var should = require('should');
 var IoC = require('./inject-me');
 
@@ -7,7 +10,7 @@ describe('bind', function () {
         // Setup
         var value = Math.random();
 
-        // Execution
+        // Exercise
         IoC.bind('MyService', { value: value});
         var service = IoC.get('MyService');
 
@@ -20,8 +23,8 @@ describe('bind', function () {
         // Setup
         var value = Math.random();
 
-        // Execution
-        IoC.bind('MyService', function () { return { value: value } });
+        // Exercise
+        IoC.bind('MyService', function () { return { value: value }; });
         var service = IoC.get('MyService');
 
         // Verification
@@ -52,7 +55,7 @@ describe('get', function () {
             };
         });
 
-        // Execution
+        // Exercise
         var service = IoC.get('Service');
         var result = service.getItems();
 
@@ -91,7 +94,7 @@ describe('inject', function () {
             };
         };
 
-        // Execution
+        // Exercise
         var controller = IoC.inject(Controller);
         var result = controller.index();
 
