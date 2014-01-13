@@ -87,10 +87,19 @@ var IoC = function () {
   };
 
   var getParams = function (s, defaults, keepDefaults) {
-    var params = {};
-    for (var i in s.params) {
-      var p = s.params[i]
-        , d = self.get(p.name);
+    var params = {}, i;
+    if (!defaults) {
+      defaults = {};
+    }
+    for (i in defaults) {
+      params[i] = defaults[i];
+    }
+    for (i in s.params) {
+      var p = s.params[i];
+      if (keepDefaults === true && defaults[p.name]) {
+        continue;
+      }
+      var d = self.get(p.name);
       if (d) {
         params[p.name] = d;
       }
