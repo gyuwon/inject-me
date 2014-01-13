@@ -1,6 +1,6 @@
 {
   "name": "inject-me",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Simple IoC framework for Javascript",
   "author": {
     "name": "Yi Gyuwon",
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:Gyuwon/inject-me.git"
+    "url": "git@github.com:gyuwon/inject-me.git"
   },
   "license": {
     "type": "MIT",
@@ -22,5 +22,8 @@
   },
   "dependencies": {
     "function-signature": "~0.2.0"
+  },
+  "devDependencies": {
+    "should": "latest"
   }
 }

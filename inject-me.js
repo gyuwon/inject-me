@@ -1,4 +1,4 @@
-/*
+/**
  *
  * The MIT License (MIT)
  * 
@@ -86,26 +86,52 @@ var IoC = function () {
     return dependency;
   };
 
-  /**
-   * Create a new instance of specified function with dependencies.
-   *
-   * Parameters
-   * - fn: The function to create a new instance.
-   *
-   * Returns: A new instance of 'fn'.
-   */
-  self.inject = function (fn) {
-    if (typeof fn !== 'function') {
-      throw new Error("The parameter 'fn' is not a function.");
-    }
-    var s = sig(fn), params = {}, i;
-    for (i in s.params) {
+  var getParams = function (s, defaults, keepDefaults) {
+    var params = {};
+    for (var i in s.params) {
       var p = s.params[i]
         , d = self.get(p.name);
       if (d) {
         params[p.name] = d;
       }
     }
+    return params;
+  };
+
+  /**
+   * Call the specified function with dependencies.
+   *
+   * Parameters
+   * - $this: The value of this provided for the call to fn.
+   * - fn: The function to create a new instance.
+   * - defaults: A set of default arguments.
+   * - keepDetaults: The value that indicates whether keep default arguments rather than dependencies.
+   *
+   * Returns: The return value of 'fn' or a new instance of it.
+   */
+  self.call = function ($this, fn, defaults, keepDefaults) {
+    if (typeof fn !== 'function') {
+      throw new Error("The parameter 'fn' is not a function.");
+    }
+    var s = sig(fn), params = getParams(s, defaults, keepDefaults);
+    return signature.invoke($this, fn, s, params);
+  };
+
+  /**
+   * Create a new instance of the specified function with dependencies.
+   *
+   * Parameters
+   * - fn: The function to create a new instance.
+   * - defaults: A set of default arguments.
+   * - keepDetaults: The value that indicates whether keep default arguments rather than dependencies.
+   *
+   * Returns: The return value of 'fn' or a new instance of it.
+   */
+  self.inject = function (fn, defaults, keepDefaults) {
+    if (typeof fn !== 'function') {
+      throw new Error("The parameter 'fn' is not a function.");
+    }
+    var s = sig(fn), params = getParams(s, defaults, keepDefaults);
     return signature.create(fn, s, params);
   };
 

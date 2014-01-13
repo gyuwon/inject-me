@@ -66,6 +66,41 @@ describe('get', function () {
 
 });
 
+describe('call', function () {
+
+    it('should inject dependencies to new object', function () {
+        // Setup
+        var items = [Math.random(), Math.random()];
+        IoC.bind('Repository', function () {
+            return {
+                findAll: function () {
+                    return items;
+                }
+            };
+        });
+        IoC.bind('Service', function (Repository) {
+            var repo = Repository;
+            return {
+                getItems: function () {
+                    return repo.findAll();
+                }
+            };
+        });
+        var action = function (Service) {
+            var service = Service;
+            return service.getItems();
+        };
+
+        // Exercise
+        var result = IoC.call(null, action);
+
+        // Verification
+        should.exist(result);
+        result.should.have.property('length', items.length);
+    });
+
+});
+
 describe('inject', function () {
 
     it('should inject dependencies to new object', function () {
