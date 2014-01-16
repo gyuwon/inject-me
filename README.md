@@ -42,6 +42,18 @@ var action = function (Service) {
 };
 
 console.log(IoC.call(this, action));
+// [ 'Ironman', 'Hulk', 'Thor' ]
+```
+
+## Function Call with Parameters
+```javascript
+var getItemByIndex = function (Service, index) {
+  var service = Service;
+  return service.getItems()[index];
+};
+
+console.log(IoC.call(this, getItemByIndex, { index: 1 }));
+// 'Hulk'
 ```
 
 ## Object Construction
@@ -54,7 +66,27 @@ var Controller = function (Service) {
 };
 
 var controller = IoC.inject(Controller);
+
 console.log(controller.index());
+// [ 'Ironman', 'Hulk', 'Thor' ]
+```
+
+## Object Construction with Parameters
+```javascript
+var Controller = function (name, Service) {
+  var service = Service;
+  this.name = name;
+  this.index = function () {
+    return service.getItems();
+  };
+};
+
+var controller = IoC.inject(Controller, { name: 'ItemsController' });
+
+console.log(controller.name);
+// 'ItemsController'
+console.log(controller.index());
+// [ 'Ironman', 'Hulk', 'Thor' ]
 ```
 
 ## License
