@@ -1,12 +1,36 @@
-/* jshint node: true */
-/* global describe, it */
-
 var should = require('should');
 var IoC = require('./inject-me');
 
 describe('IoC', function () {
-
   var items = [Math.random(), Math.random()];
+
+  describe('bind', function () {
+    it("should register a dependency object", function () {
+      // Setup
+      var value = Math.random();
+
+      // Exercise
+      IoC.bind('MyService', { value: value});
+      var service = IoC.get('MyService');
+
+      // Verify
+      should.exist(service);
+      service.should.have.property('value', value);
+    });
+
+    it("should register a dependency resolver function", function () {
+      // Setup
+      var value = Math.random();
+
+      // Exercise
+      IoC.bind('MyService', function () { return { value: value }; });
+      var service = IoC.get('MyService');
+
+      // Verify
+      should.exist(service);
+      service.should.have.property('value', value);
+    });
+  });
 
   IoC.bind('Repository', function () {
     return {
@@ -25,38 +49,7 @@ describe('IoC', function () {
     };
   });
 
-  describe('bind', function () {
-
-    it("should register a dependency object", function () {
-      // Setup
-      var value = Math.random();
-
-      // Exercise
-      IoC.bind('MyService', { value: value});
-      var service = IoC.get('MyService');
-
-      // Verification
-      should.exist(service);
-      service.should.have.property('value', value);
-    });
-
-    it("should register a dependency resolver function", function () {
-      // Setup
-      var value = Math.random();
-
-      // Exercise
-      IoC.bind('MyService', function () { return { value: value }; });
-      var service = IoC.get('MyService');
-
-      // Verification
-      should.exist(service);
-      service.should.have.property('value', value);
-    });
-
-  });
-
   describe('get', function () {
-
     it('should inject dependencies to dependency resolvers', function () {
       // Setup
 
@@ -64,15 +57,13 @@ describe('IoC', function () {
       var service = IoC.get('Service');
       var result = service.getItems();
 
-      // Verification
+      // Verify
       should.exist(result);
-      result.should.have.property('length', items.length);
+      result.should.equal(items);
     });
-
   });
 
   describe('call', function () {
-
     it('should inject dependencies to new object', function () {
       // Setup
       var action = function (Service) {
@@ -83,9 +74,9 @@ describe('IoC', function () {
       // Exercise
       var result = IoC.call(null, action);
 
-      // Verification
+      // Verify
       should.exist(result);
-      result.should.have.property('length', items.length);
+      result.should.equal(items);
     });
 
     it('should keep default arguments when keepDefaults is true', function () {
@@ -104,15 +95,13 @@ describe('IoC', function () {
         }
       }, true);
 
-      // Verification
+      // Verify
       should.exist(result);
-      result.should.have.property('length', 0);
+      result.should.be.instanceof(Array).and.have.property('length', 0);
     });
-
   });
 
   describe('inject', function () {
-
     it('should inject dependencies to new object', function () {
       // Setup
       var Controller = function (Service) {
@@ -127,11 +116,9 @@ describe('IoC', function () {
       var controller = IoC.inject(Controller);
       var result = controller.index();
 
-      // Verification
+      // Verify
       should.exist(result);
-      result.should.have.property('length', items.length);
+      result.should.equal(items);
     });
-
   });
-
 });

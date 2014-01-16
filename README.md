@@ -1,54 +1,61 @@
 # inject-me
-
-Simple IoC framework for Javascript.
+inject-me is a simple IoC container for javascript.
 
 ## Installation
+```
+$ npm install inject-me
+```
 
-    $ npm install inject-me
-    
-## Usage
+## Getting the IoC Container Instance
+```javascript
+var IoC = require('inject-me');
+```
 
-    var IoC = require('inject-me');
+## Module Registration
+```javascript
+// Register 'Repository' depenency.
+IoC.bind('Repository', function () {
+  var items = ['Ironman', 'Hulk', 'Thor'];
+  return {
+    findAll: function () {
+      return items;
+    }
+  };
+});
 
-    // Register 'Repository' depenency.
-    IoC.bind('Repository', function () {
-        var items = ['Ironman', 'Hulk', 'Thor'];
-        return {
-            findAll: function () {
-                return items;
-            }
-        };
-    });
+// Register 'Service' dependency that depends on 'Repository'.
+IoC.bind('Service', function (Repository) {
+  var repo = Repository;
+  return {
+    getItems: function () {
+      return repo.findAll();
+    }
+  };
+});
+```
 
-    // Register 'Service' dependency that depends on 'Repository'.
-    IoC.bind('Service', function (Repository) {
-        var repo = Repository;
-        return {
-            getItems: function () {
-                return repo.findAll();
-            }
-        };
-    });
+## Function Call
+```javascript
+var action = function (Service) {
+  var service = Service;
+  return service.getItems();
+};
 
-    // Define the controller type that depends on 'Service'.
-    var Controller = function (Service) {
-        var self = this;
-        self.service = Service;
-        this.index = function () {
-            return self.service.getItems();
-        };
-    };
+console.log(IoC.call(this, action));
+```
 
-    // Create a new instance of 'Controller'
-    var controller = IoC.inject(Controller);
+## Object Construction
+```javascript
+var Controller = function (Service) {
+  var service = Service;
+  this.index = function () {
+    return service.getItems();
+  };
+};
 
-    // Invoke the index action.
-    var items = controller.index();
-
-    // Print the result.
-    for (var i = 0; i < items.length; i++) {
-        console.log(items[i]);
-    };
+var controller = IoC.inject(Controller);
+console.log(controller.index());
+```
 
 ## License
 

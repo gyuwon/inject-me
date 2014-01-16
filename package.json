@@ -1,6 +1,6 @@
 {
   "name": "inject-me",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Simple IoC framework for Javascript",
   "author": {
     "name": "Yi Gyuwon",
@@ -24,6 +24,6 @@
     "function-signature": "~0.2.0"
   },
   "devDependencies": {
-    "should": "latest"
+    "should": "~2.1.1"
   }
 }
